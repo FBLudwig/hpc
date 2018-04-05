@@ -5,8 +5,13 @@
 
 int main(int argc, char **argv) {
 
-#pragma omp parallel num_threads(4)
-  printf("Hello World from thread %d of %d\n", omp_get_thread_num(), omp_get_num_threads());
+    char hello_world[5][30] = { "Hola mundo", "Hej varlden", "Bonjour tout le monde", "Hallo Welt", "Hello World" };
 
-  return 0;
+    #pragma omp parallel for num_threads(4)
+    for( int i = 0; i < 5 ; ++i) {
+        printf("%s from thread %d of %d\n", hello_world[i], omp_get_thread_num(), omp_get_num_threads());
+
+    }
+
+    return 0;
 }
