@@ -63,7 +63,7 @@ for (i=0; i<N; i++)
 
 
 
-void print_results(float array[N], int tid, int section) 
+void print_results(float array[N], int tid, int section)
 {
   int i,j;
 
@@ -83,7 +83,7 @@ void print_results(float array[N], int tid, int section)
     printf("\n");
   } /*** end of critical ***/
 
-  #pragma omp barrier
+  //Error: #pragma omp barrier
   printf("Thread %d done and synchronized.\n", tid); 
 
 }
