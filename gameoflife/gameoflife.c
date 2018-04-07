@@ -65,16 +65,25 @@ void show(double *currentfield, int w, int h) {
 
 
 void evolve(double *currentfield, double *newfield, int w, int h) {
-    int x, y;
-    for (y = 0; y < h; y++) {
-        for (x = 0; x < w; x++) {
-            int index = calcIndex(w, x, y);
-            int live_neighbours = count_live_neighbours(currentfield, x, y, w, h);
+    int square_thread_count = 2;
 
-            if (live_neighbours == 3 || (live_neighbours == 2 && currentfield[index])) {
-                newfield[index] = 1;
-            } else {
-                newfield[index] = 0;
+    omp_set_num_threads(square_thread_count * square_thread_count);
+#pragma omp parallel
+    {
+        int y_region = (h/square_thread_count * (omp_get_thread_num() % square_thread_count));
+        int x_region = (w/square_thread_count * (omp_get_thread_num() / square_thread_count));
+
+        int x, y;
+        for (y = 0 + y_region; y < h/square_thread_count + y_region; y++) {
+            for (x = 0 + x_region; x < w/square_thread_count + x_region; x++) {
+                int index = calcIndex(w, x, y);
+                int live_neighbours = count_live_neighbours(currentfield, x, y, w, h);
+
+                if (live_neighbours == 3 || (live_neighbours == 2 && currentfield[index])) {
+                    newfield[index] = 1;
+                } else {
+                    newfield[index] = 0;
+                }
             }
         }
     }
